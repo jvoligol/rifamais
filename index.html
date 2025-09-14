@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RifaMais - Crie Suas Rifas Online Sem Taxa Inicial!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 
+                0 20px 40px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-circle::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(45deg, #8b5cf6, #ec4899, #f59e0b, #8b5cf6);
+            border-radius: 50%;
+            animation: rotate 4s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .verified-check {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            border: 3px solid #0a0a0f;
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #a1a1aa;
+            margin-bottom: 25px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .loteria-banner {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 25px;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+            to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.4); }
+        }
+
+        .loteria-text {
+            font-weight: 700;
+            color: #86efac;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .loteria-subtitle {
+            font-size: 12px;
+            color: #d1d5db;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 800;
+            color: #8b5cf6;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-section {
+            margin-bottom: 25px;
+        }
+
+        .primary-cta {
+            width: 100%;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 10px 25px rgba(34, 197, 94, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .primary-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .primary-cta:hover::before {
+            left: 100%;
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 40px rgba(34, 197, 94, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .secondary-cta {
+            width: 100%;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 18px;
+            color: #c4b5fd;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .secondary-cta:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .links-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .link-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .instagram-icon { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+        .website-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+
+        .link-content {
+            flex: 1;
+        }
+
+        .link-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .link-desc {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .social-proof {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .social-proof-text {
+            font-size: 14px;
+            color: #86efac;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .social-proof-detail {
+            font-size: 12px;
+            color: #a7f3d0;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .notification {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .brand-title {
+                font-size: 2.2rem;
+            }
+            
+            .logo-circle {
+                width: 100px;
+                height: 100px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                Plataforma Oficial Verificada
+            </div>
+            
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <img src="logo-rifamais.jpg" alt="RifaMais Logo" class="logo-img" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-fallback\'>R+</div>'">
+                </div>
+                <div class="verified-check">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+
+            <h1 class="brand-title">RifaMais</h1>
+            <p class="tagline">🚀 Plataforma Completa para Suas Rifas Online!</p>
+        </div>
+
+        <div class="loteria-banner">
+            <div class="loteria-text">🏆 SORTEIOS PELA LOTERIA FEDERAL</div>
+            <div class="loteria-subtitle">Todos os resultados são oficiais e transparentes</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">0%</span>
+                <span class="stat-label">Taxa Inicial</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">5%</span>
+                <span class="stat-label">Por Venda</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Suporte</span>
+            </div>
+        </div>
+
+        <div class="social-proof">
+            <div class="social-proof-text">💰 SEM TAXA DE IMPLANTAÇÃO</div>
+            <div class="social-proof-detail">Apenas 5% sobre títulos vendidos - Comece hoje mesmo!</div>
+        </div>
+
+        <div class="cta-section">
+            <a href="#" class="primary-cta" onclick="openWhatsAppWithBonus()">
+                <i class="fab fa-whatsapp"></i>
+                QUERO CRIAR MINHA RIFA
+            </a>
+            
+            <a href="#" class="secondary-cta" onclick="openWebsite()">
+                <i class="fas fa-rocket"></i>
+                Ver Como Funciona a Plataforma
+            </a>
+        </div>
+
+        <div class="links-section">
+            <a href="#" class="link-card" onclick="openInstagram()">
+                <div class="link-icon instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <div class="link-content">
+                    <div class="link-title">Instagram Oficial</div>
+                    <div class="link-desc">Sorteios ao vivo e casos de sucesso</div>
+                </div>
+            </a>
+
+            <a href="#" class="link-card" onclick="openWebsite()">
+                <div class="link-icon website-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="link-content">
+                    <div class="link-title">Plataforma Completa</div>
+                    <div class="link-desc">Sistema profissional para suas rifas</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">
+                © 2024 RifaMais - Licenciado pela Loteria Federal<br>
+                <strong>Todos os sorteios são oficiais e transparentes</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const LINKS = {
+            whatsapp: 'https://wa.me/5563999146662?text=💼 Olá! Vi sobre a plataforma RifaMais e quero saber mais sobre como criar minhas próprias rifas. Como funciona o sistema de 5%25 apenas sobre vendas?',
+            whatsappBonus: 'https://wa.me/5563999146662?text=🚀 QUERO CRIAR MINHA RIFA! Vi que não tem taxa de implantação e cobram apenas 5%25 por venda. Como faço para começar hoje mesmo?',
+            website: 'https://seusite.com.br',
+            instagram: 'https://www.instagram.com/rifamax_oficial/'
+        };
+
+        function openWhatsAppWithBonus() {
+            window.open(LINKS.whatsappBonus, '_blank');
+            showNotification('🎉 Redirecionando para demonstração!');
+            trackConversion('WhatsApp CTA Principal');
+        }
+
+        function openWhatsApp() {
+            window.open(LINKS.whatsapp, '_blank');
+            showNotification('💬 Abrindo WhatsApp...');
+            trackConversion('WhatsApp Padrão');
+        }
+
+        function openWebsite() {
+            window.open(LINKS.website, '_blank');
+            showNotification('🚀 Abrindo plataforma...');
+            trackConversion('Website');
+        }
+
+        function openInstagram() {
+            window.open(LINKS.instagram, '_blank');
+            showNotification('📱 Abrindo Instagram...');
+            trackConversion('Instagram');
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function trackConversion(action) {
+            console.log(`Conversão: ${action} - ${new Date().toISOString()}`);
+            
+            // Analytics tracking
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'conversion', {
+                    'event_category': 'Link Tree',
+                    'event_label': action,
+                    'value': 1
+                });
+            }
+        }
+
+        // Efeitos de engagement
+        window.addEventListener('load', () => {
+            // Animação sequencial dos elementos
+            const elements = document.querySelectorAll('.stat-card, .link-card');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        });
+
+        // Prevenção de saída (exit intent)
+        let hasShownExitIntent = false;
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY <= 0 && !hasShownExitIntent) {
+                hasShownExitIntent = true;
+                showNotification('⚡ Espere! Veja como é fácil ganhar dinheiro com rifas!');
+            }
+        });
+    </script>
+</body>
+</html>
